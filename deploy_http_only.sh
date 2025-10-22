@@ -52,9 +52,14 @@ docker-compose exec -T web python manage.py create_public_tenant --domain build.
 # Set up temporary Nginx configuration
 echo "🌐 Setting up Nginx configuration..."
 
+# Create Nginx directories if they don't exist
+sudo mkdir -p /etc/nginx/sites-available
+sudo mkdir -p /etc/nginx/sites-enabled
+
 # Create temporary self-signed certificate
 if [ ! -f "/etc/ssl/certs/temp-build.crt" ]; then
     echo "🔒 Creating temporary self-signed certificate..."
+    sudo mkdir -p /etc/ssl/certs /etc/ssl/private
     sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -keyout /etc/ssl/private/temp-build.key \
         -out /etc/ssl/certs/temp-build.crt \
@@ -63,7 +68,10 @@ fi
 
 # Copy Nginx configuration
 sudo cp nginx-http-only.conf /etc/nginx/sites-available/build.justcodeworks.eu
-sudo ln -sf /etc/nginx/sites-available/build.justcodeworks.eu /etc/nginx/sites-enabled/
+sudo ln -sf /etc/nginx/sites-available/build.justcodeworks.eu /etc/nginx/sites-enabled/build.justcodeworks.eu
+
+# Remove default Nginx site if it exists
+sudo rm -f /etc/nginx/sites-enabled/default
 
 # Test Nginx configuration
 sudo nginx -t
