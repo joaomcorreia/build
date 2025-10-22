@@ -1,0 +1,103 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: build_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - build_network
+
+  # Redis for Celery and Caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - build_network
+
+  # Django Web Application
+  web:
+    build: .
+    command: gunicorn build_project.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=False
+      - DATABASE_URL=postgresql://postgres:password@db:5432/build_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    networks:
+      - build_network
+
+  # Celery Worker
+  celery:
+    build: .
+    command: celery -A build_project worker --loglevel=info --concurrency=2
+    volumes:
+      - .:/app
+      - media_volume:/app/media
+    environment:
+      - DEBUG=False
+      - DATABASE_URL=postgresql://postgres:password@db:5432/build_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    networks:
+      - build_network
+
+  # Celery Beat (Scheduler)
+  celery-beat:
+    build: .
+    command: celery -A build_project beat --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=False
+      - DATABASE_URL=postgresql://postgres:password@db:5432/build_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    networks:
+      - build_network
+
+  # Nginx (Production)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - web
+    networks:
+      - build_network
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  build_network:
+    driver: bridge
