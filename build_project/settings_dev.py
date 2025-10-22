@@ -49,4 +49,7 @@ CACHES = {
 # Use simplified URLs for development
 ROOT_URLCONF = 'build_project.urls_dev'
 
+# Disable tenant routing for development
+DATABASE_ROUTERS = []
+
 print("[DEV] Using development settings with SQLite database")

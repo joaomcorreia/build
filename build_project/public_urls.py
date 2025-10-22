@@ -8,6 +8,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+# Import the API status function explicitly
 from accounts.views import api_status
 
 urlpatterns = [
