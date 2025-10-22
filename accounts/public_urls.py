@@ -6,6 +6,7 @@ app_name = 'accounts_public'
 urlpatterns = [
     path('', views.LandingPageView.as_view(), name='landing'),
     path('signup/', views.SignUpView.as_view(), name='signup'),
+    path('website-setup/', views.WebsiteSetupView.as_view(), name='website_setup'),
     path('pricing/', views.PricingView.as_view(), name='pricing'),
     path('features/', views.FeaturesView.as_view(), name='features'),
     path('contact/', views.ContactView.as_view(), name='contact'),

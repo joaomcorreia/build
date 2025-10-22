@@ -1,10 +1,12 @@
 from django.http import JsonResponse
-from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.shortcuts import render, redirect
+from django.views.generic import TemplateView, CreateView
+from django.contrib import messages
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.views import APIView
+from .forms import CompanySignUpForm
 
 
 def landing_page(request):
@@ -44,12 +46,56 @@ class LandingPageView(TemplateView):
         })
         return context
 
-class SignUpView(TemplateView):
+class SignUpView(CreateView):
+    form_class = CompanySignUpForm
     template_name = 'accounts/signup.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Sign Up'
+        context.update({
+            'title': 'Start Building Your Website',
+            'subtitle': 'Create your account and get started in minutes',
+        })
+        return context
+    
+    def form_valid(self, form):
+        # Save the user
+        user = form.save()
+        
+        # Store website details in session for later use
+        website_data = {
+            'website_name': form.cleaned_data['website_name'],
+            'website_type': form.cleaned_data['website_type'],
+            'desired_domain': form.cleaned_data['desired_domain'],
+        }
+        self.request.session['website_data'] = website_data
+        
+        messages.success(
+            self.request, 
+            f'Welcome {user.first_name}! Your account has been created successfully.'
+        )
+        
+        # Redirect to website configuration or payment
+        return redirect('accounts_public:website_setup')
+    
+    def form_invalid(self, form):
+        messages.error(
+            self.request,
+            'Please correct the errors below and try again.'
+        )
+        return super().form_invalid(form)
+
+class WebsiteSetupView(TemplateView):
+    template_name = 'accounts/website_setup.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        website_data = self.request.session.get('website_data', {})
+        context.update({
+            'title': 'Configure Your Website',
+            'subtitle': 'Let\'s set up your website details',
+            'website_data': website_data
+        })
         return context
 
 class PricingView(TemplateView):
