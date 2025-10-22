@@ -1,8 +1,10 @@
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.generic import TemplateView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, viewsets
+from rest_framework.views import APIView
 
 
 def landing_page(request):
@@ -24,22 +26,40 @@ def landing_page(request):
     return render(request, 'landing.html', context)
 
 
-class LandingPageView:
-    def as_view(self):
-        return landing_page
+class LandingPageView(TemplateView):
+    template_name = 'accounts/landing.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'title': 'Build Platform - Multi-Tenant Website Builder',
+            'description': 'Create and manage websites with AI-powered tools',
+            'features': [
+                'Multi-tenant architecture',
+                'AI-powered content generation', 
+                'Advanced media management',
+                'Responsive website builder',
+                'SEO optimization tools',
+            ]
+        })
+        return context
 
+class SignUpView(TemplateView):
+    template_name = 'accounts/signup.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Sign Up'
+        return context
 
-class SignUpView:
-    def as_view(self):
-        def signup_view(request):
-            return render(request, 'signup.html', {'title': 'Sign Up'})
-        return signup_view
-
-
-class PricingView:
-    def as_view(self):
-        def pricing_view(request):
-            plans = [
+class PricingView(TemplateView):
+    template_name = 'accounts/pricing.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'title': 'Pricing',
+            'plans': [
                 {
                     'name': 'Starter',
                     'price': '$9/month',
@@ -56,36 +76,41 @@ class PricingView:
                     'features': ['200 pages', '20GB storage', 'Advanced AI', 'Custom domains']
                 }
             ]
-            return render(request, 'pricing.html', {'title': 'Pricing', 'plans': plans})
-        return pricing_view
+        })
+        return context
+
+class FeaturesView(TemplateView):
+    template_name = 'accounts/features.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Features'
+        return context
+
+class ContactView(TemplateView):
+    template_name = 'accounts/contact.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Contact'
+        return context
 
 
-class FeaturesView:
-    def as_view(self):
-        def features_view(request):
-            return render(request, 'features.html', {'title': 'Features'})
-        return features_view
+class AboutView(TemplateView):
+    template_name = 'accounts/about.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'About'
+        return context
 
-
-class ContactView:
-    def as_view(self):
-        def contact_view(request):
-            return render(request, 'contact.html', {'title': 'Contact'})
-        return contact_view
-
-
-class AboutView:
-    def as_view(self):
-        def about_view(request):
-            return render(request, 'about.html', {'title': 'About'})
-        return about_view
-
-
-class PublicLoginView:
-    def as_view(self):
-        def login_view(request):
-            return render(request, 'login.html', {'title': 'Login'})
-        return login_view
+class PublicLoginView(TemplateView):
+    template_name = 'accounts/login.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Login'
+        return context
 
 
 @api_view(['GET'])
