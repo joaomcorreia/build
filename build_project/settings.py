@@ -124,6 +124,11 @@ DATABASES = {
 # Use django-tenants database backend
 DATABASES['default']['ENGINE'] = 'django_tenants.postgresql_backend'
 
+# Database routers for multi-tenancy
+DATABASE_ROUTERS = (
+    'django_tenants.routers.TenantSyncRouter',
+)
+
 # Cache configuration
 CACHES = {
     'default': {
