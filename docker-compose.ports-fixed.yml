@@ -1,0 +1,85 @@
+services:
+  # PostgreSQL Database - Using port 5433 to avoid conflicts
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: build_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5433:5432"  # Use 5433 externally, 5432 internally
+    networks:
+      - build_network
+
+  # Redis for Celery and Caching - Using port 6380 to avoid conflicts
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"  # Use 6380 externally, 6379 internally
+    networks:
+      - build_network
+
+  # Django Web Application
+  web:
+    build: .
+    command: gunicorn build_project.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8001:8000"  # Use 8001 externally to avoid conflicts
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/build_db
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SETTINGS_MODULE=build_project.settings
+    depends_on:
+      - db
+      - redis
+    networks:
+      - build_network
+
+  # Celery Worker
+  celery:
+    build: .
+    command: celery -A build_project worker -l info
+    volumes:
+      - .:/app
+      - media_volume:/app/media
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/build_db
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SETTINGS_MODULE=build_project.settings
+    depends_on:
+      - db
+      - redis
+    networks:
+      - build_network
+
+  # Celery Beat (for scheduled tasks)
+  celery-beat:
+    build: .
+    command: celery -A build_project beat -l info
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/build_db
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SETTINGS_MODULE=build_project.settings
+    depends_on:
+      - db
+      - redis
+    networks:
+      - build_network
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+
+networks:
+  build_network:
+    driver: bridge
