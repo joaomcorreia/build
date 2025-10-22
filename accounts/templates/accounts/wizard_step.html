@@ -6,7 +6,7 @@
 <div class="container-fluid vh-100">
     <div class="row h-100">
         <!-- Left Side - Progress & Info -->
-        <div class="col-lg-4 bg-primary text-white d-flex flex-column justify-content-center p-5">
+        <div class="{% if current_step == 4 %}col-lg-3{% else %}col-lg-4{% endif %} bg-primary text-white d-flex flex-column justify-content-center p-5">
             <div class="mb-5">
                 <h2 class="fw-bold">Build Your Dream Website</h2>
                 <p class="lead opacity-75">We'll create a stunning website tailored to your business in just 4 simple steps.</p>
@@ -68,8 +68,8 @@
         </div>
         
         <!-- Right Side - Form Content -->
-        <div class="col-lg-8 d-flex align-items-center justify-content-center p-5">
-            <div class="w-100" style="max-width: 600px;">
+        <div class="{% if current_step == 4 %}col-lg-9{% else %}col-lg-8{% endif %} d-flex align-items-center justify-content-center p-5">
+            <div class="w-100" style="max-width: {% if current_step == 4 %}100%{% else %}600px{% endif %};">
                 <div class="text-center mb-5">
                     <div class="display-1 text-primary mb-3">
                         <i class="bi bi-{{ step_icon }}"></i>

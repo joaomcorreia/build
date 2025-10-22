@@ -78,12 +78,17 @@ class SignupWizardView(TemplateView):
         
         return context
     
-    def post(self, request, step):
-        step = int(step)
+    def post(self, request, **kwargs):
+        step = int(kwargs.get('step', 1))
+        print(f"DEBUG: POST request for step {step}")
         wizard_data = request.session.get('wizard_data', {})
         
         if step == 1:
             form = Step1PersonalForm(request.POST)
+            print(f"DEBUG: Step 1 form data: {request.POST}")
+            print(f"DEBUG: Step 1 form valid: {form.is_valid()}")
+            if not form.is_valid():
+                print(f"DEBUG: Form errors: {form.errors}")
             if form.is_valid():
                 # Save form data to session
                 wizard_data.update({
@@ -154,9 +159,47 @@ class SignupWizardView(TemplateView):
                 messages.success(request, f'Welcome {user.first_name}! Your account has been created.')
                 return redirect('accounts_public:website_creation_success')
         
-        # If form is invalid, show errors
+        # If we get here, form validation failed
         messages.error(request, 'Please correct the errors below.')
-        return self.get(request, step)
+        
+        # Re-render the current step with the form errors
+        context = self.get_context_data(**kwargs)
+        
+        # Make sure we pass the form with errors for the current step
+        if step == 1:
+            context['form'] = Step1PersonalForm(request.POST)
+            context.update({
+                'title': 'Welcome! Let\'s Get Started',
+                'subtitle': 'Create your account to begin building your website',
+                'step_icon': 'person-circle',
+                'step_title': 'Personal Information'
+            })
+        elif step == 2:
+            context['form'] = Step2BusinessForm(request.POST)
+            context.update({
+                'title': 'Tell Us About Your Business',
+                'subtitle': 'Help us understand your business to create the perfect website',
+                'step_icon': 'building',
+                'step_title': 'Business Details'
+            })
+        elif step == 3:
+            context['form'] = Step3DomainForm(request.POST)
+            context.update({
+                'title': 'Choose Your Perfect Domain',
+                'subtitle': 'We\'ve suggested some great domain names for your business',
+                'step_icon': 'globe',
+                'step_title': 'Domain Selection'
+            })
+        elif step == 4:
+            context['form'] = Step4PreviewForm(request.POST)
+            context.update({
+                'title': 'Preview Your Website',
+                'subtitle': 'Here\'s what we\'ve created for you using AI',
+                'step_icon': 'eye',
+                'step_title': 'AI Preview'
+            })
+        
+        return render(request, self.template_name, context)
     
     def generate_domain_suggestions(self, business_name, category):
         """Generate AI-powered domain suggestions"""
