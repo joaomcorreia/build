@@ -13,12 +13,13 @@ class Command(BaseCommand):
         User.objects.filter(email=email).delete()
         
         # Create new admin user
-        user = User.objects.create_user(
+        user = User.objects.create(
             email=email,
-            password=password,
+            username=email,  # Use email as username too
             first_name='Admin',
             last_name='User'
         )
+        user.set_password(password)
         user.is_staff = True
         user.is_superuser = True
         user.is_active = True
