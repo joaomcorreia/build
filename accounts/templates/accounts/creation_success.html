@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}Website Created Successfully! - Build Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid vh-100 bg-gradient-primary">
+    <div class="row h-100 align-items-center justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-body text-center p-5">
+                    <!-- Success Animation -->
+                    <div class="mb-4">
+                        <div class="success-animation">
+                            <div class="checkmark-circle">
+                                <div class="background"></div>
+                                <div class="checkmark draw"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h1 class="display-4 fw-bold text-success mb-3">Congratulations!</h1>
+                    <h2 class="h4 text-primary mb-4">{{ title }}</h2>
+                    <p class="lead text-muted mb-4">{{ subtitle }}</p>
+                    
+                    <!-- Website Details -->
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-building text-primary fs-3"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3 text-start">
+                                        <h6 class="fw-bold mb-1">Business Name</h6>
+                                        <p class="mb-0 text-muted">{{ business_name }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-globe text-primary fs-3"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3 text-start">
+                                        <h6 class="fw-bold mb-1">Domain</h6>
+                                        <p class="mb-0 text-muted">{{ domain }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- What's Happening -->
+                    <div class="mb-5">
+                        <h5 class="fw-bold mb-3">What's happening now?</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="text-center p-3">
+                                    <div class="mb-2">
+                                        <i class="bi bi-gear-fill text-primary fs-1"></i>
+                                    </div>
+                                    <h6 class="fw-semibold">Setting Up</h6>
+                                    <small class="text-muted">Creating your website infrastructure</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3">
+                                    <div class="mb-2">
+                                        <i class="bi bi-magic text-primary fs-1"></i>
+                                    </div>
+                                    <h6 class="fw-semibold">AI Generation</h6>
+                                    <small class="text-muted">Our AI is creating your content</small>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center p-3">
+                                    <div class="mb-2">
+                                        <i class="bi bi-rocket-takeoff text-primary fs-1"></i>
+                                    </div>
+                                    <h6 class="fw-semibold">Going Live</h6>
+                                    <small class="text-muted">Publishing your website</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Next Steps -->
+                    <div class="d-grid gap-3">
+                        <a href="#" class="btn btn-primary btn-lg">
+                            <i class="bi bi-eye me-2"></i>
+                            View My Website
+                        </a>
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="bi bi-tools me-2"></i>
+                            Customize My Website
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="bi bi-credit-card me-2"></i>
+                            Choose Payment Plan
+                        </a>
+                    </div>
+                    
+                    <!-- Additional Info -->
+                    <div class="mt-4 p-3 bg-light rounded">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="fw-bold mb-1">Need Help?</h6>
+                                <small class="text-muted">Our team is here to help you get the most out of your website.</small>
+                            </div>
+                            <div class="col-md-4">
+                                <a href="#" class="btn btn-sm btn-outline-primary">Contact Support</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.success-animation {
+    margin: 0 auto 2rem;
+    width: 80px;
+    height: 80px;
+}
+
+.checkmark-circle {
+    width: 80px;
+    height: 80px;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.checkmark-circle .background {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #28a745;
+    position: absolute;
+    animation: scale-up 0.5s ease-out;
+}
+
+.checkmark-circle .checkmark {
+    border-radius: 5px;
+}
+
+.checkmark-circle .checkmark.draw:after {
+    animation-delay: 0.5s;
+    animation-duration: 0.3s;
+    animation-timing-function: ease;
+    animation-name: checkmark;
+    transform: scaleX(-1) rotate(135deg);
+    animation-fill-mode: forwards;
+}
+
+.checkmark-circle .checkmark:after {
+    opacity: 1;
+    height: 30px;
+    width: 15px;
+    transform-origin: left top;
+    border-right: 3px solid #fff;
+    border-top: 3px solid #fff;
+    content: '';
+    left: 25px;
+    top: 40px;
+    position: absolute;
+}
+
+@keyframes scale-up {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+@keyframes checkmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 0;
+        width: 15px;
+        opacity: 1;
+    }
+    40% {
+        height: 30px;
+        width: 15px;
+        opacity: 1;
+    }
+    100% {
+        height: 30px;
+        width: 15px;
+        opacity: 1;
+    }
+}
+</style>
+{% endblock %}

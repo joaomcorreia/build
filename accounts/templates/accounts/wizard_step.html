@@ -1,0 +1,499 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Build Platform{% endblock %}
+
+{% block content %}
+<div class="container-fluid vh-100">
+    <div class="row h-100">
+        <!-- Left Side - Progress & Info -->
+        <div class="col-lg-4 bg-primary text-white d-flex flex-column justify-content-center p-5">
+            <div class="mb-5">
+                <h2 class="fw-bold">Build Your Dream Website</h2>
+                <p class="lead opacity-75">We'll create a stunning website tailored to your business in just 4 simple steps.</p>
+            </div>
+            
+            <!-- Progress Indicator -->
+            <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="small">Step {{ current_step }} of {{ total_steps }}</span>
+                    <span class="small">{{ progress_percentage|floatformat:0 }}% Complete</span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar bg-success" style="width: {{ progress_percentage }}%"></div>
+                </div>
+            </div>
+            
+            <!-- Step Indicators -->
+            <div class="steps-indicator">
+                <div class="step {% if current_step >= 1 %}active{% endif %} {% if current_step > 1 %}completed{% endif %}">
+                    <div class="step-icon">
+                        <i class="bi bi-person-circle"></i>
+                    </div>
+                    <div class="step-content">
+                        <h6>Personal Info</h6>
+                        <small class="text-white-50">Your basic details</small>
+                    </div>
+                </div>
+                
+                <div class="step {% if current_step >= 2 %}active{% endif %} {% if current_step > 2 %}completed{% endif %}">
+                    <div class="step-icon">
+                        <i class="bi bi-building"></i>
+                    </div>
+                    <div class="step-content">
+                        <h6>Business Details</h6>
+                        <small class="text-white-50">About your business</small>
+                    </div>
+                </div>
+                
+                <div class="step {% if current_step >= 3 %}active{% endif %} {% if current_step > 3 %}completed{% endif %}">
+                    <div class="step-icon">
+                        <i class="bi bi-globe"></i>
+                    </div>
+                    <div class="step-content">
+                        <h6>Domain Selection</h6>
+                        <small class="text-white-50">Choose your web address</small>
+                    </div>
+                </div>
+                
+                <div class="step {% if current_step >= 4 %}active{% endif %}">
+                    <div class="step-icon">
+                        <i class="bi bi-eye"></i>
+                    </div>
+                    <div class="step-content">
+                        <h6>AI Preview</h6>
+                        <small class="text-white-50">See your website</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Side - Form Content -->
+        <div class="col-lg-8 d-flex align-items-center justify-content-center p-5">
+            <div class="w-100" style="max-width: 600px;">
+                <div class="text-center mb-5">
+                    <div class="display-1 text-primary mb-3">
+                        <i class="bi bi-{{ step_icon }}"></i>
+                    </div>
+                    <h1 class="h2 fw-bold">{{ step_title }}</h1>
+                    <p class="text-muted">{{ subtitle }}</p>
+                </div>
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                
+                <!-- Step 1: Personal Information -->
+                {% if current_step == 1 %}
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold">First Name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold">Last Name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">Email Address</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold">Password</label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="text-danger small mt-1">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold">Confirm Password</label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger small mt-1">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Continue to Business Details
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+                
+                <!-- Step 2: Business Information -->
+                {% if current_step == 2 %}
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.business_name.id_for_label }}" class="form-label fw-semibold">Business Name</label>
+                        {{ form.business_name }}
+                        {% if form.business_name.errors %}
+                            <div class="text-danger small mt-1">{{ form.business_name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.business_category.id_for_label }}" class="form-label fw-semibold">Business Category</label>
+                        {{ form.business_category }}
+                        {% if form.business_category.errors %}
+                            <div class="text-danger small mt-1">{{ form.business_category.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.business_description.id_for_label }}" class="form-label fw-semibold">Business Description <small class="text-muted">(Optional)</small></label>
+                        {{ form.business_description }}
+                        <div class="form-text">Tell us briefly about what your business does</div>
+                        {% if form.business_description.errors %}
+                            <div class="text-danger small mt-1">{{ form.business_description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <h6 class="fw-semibold text-primary mb-3">Business Address</h6>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.street_address.id_for_label }}" class="form-label">Street Address</label>
+                        {{ form.street_address }}
+                        {% if form.street_address.errors %}
+                            <div class="text-danger small mt-1">{{ form.street_address.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.city.id_for_label }}" class="form-label">City</label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                                <div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="{{ form.state.id_for_label }}" class="form-label">State</label>
+                            {{ form.state }}
+                            {% if form.state.errors %}
+                                <div class="text-danger small mt-1">{{ form.state.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="{{ form.zip_code.id_for_label }}" class="form-label">ZIP Code</label>
+                            {{ form.zip_code }}
+                            {% if form.zip_code.errors %}
+                                <div class="text-danger small mt-1">{{ form.zip_code.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <label for="{{ form.country.id_for_label }}" class="form-label">Country</label>
+                            {{ form.country }}
+                            {% if form.country.errors %}
+                                <div class="text-danger small mt-1">{{ form.country.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label">Phone <small class="text-muted">(Optional)</small></label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'accounts_public:signup_wizard' step=1 %}" class="btn btn-outline-secondary btn-lg flex-fill">
+                            <i class="bi bi-arrow-left me-2"></i>Back
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg flex-fill">
+                            Continue to Domain
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+                
+                <!-- Step 3: Domain Selection -->
+                {% if current_step == 3 %}
+                <div class="mb-4">
+                    <p class="text-muted">Based on "<strong>{{ business_name }}</strong>", here are some great domain options:</p>
+                </div>
+                
+                <form method="post" id="domainForm">
+                    {% csrf_token %}
+                    {{ form.selected_domain }}
+                    
+                    <div class="row">
+                        {% for domain in suggested_domains %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card domain-option {% if domain.recommended %}border-primary{% endif %}" 
+                                 onclick="selectDomain('{{ domain.domain }}')">
+                                <div class="card-body text-center">
+                                    {% if domain.recommended %}
+                                        <div class="badge bg-primary mb-2">Recommended</div>
+                                    {% endif %}
+                                    <h6 class="card-title">{{ domain.domain }}</h6>
+                                    <p class="text-success mb-2">
+                                        {% if domain.available %}
+                                            <i class="bi bi-check-circle"></i> Available
+                                        {% else %}
+                                            <i class="bi bi-x-circle text-danger"></i> Taken
+                                        {% endif %}
+                                    </p>
+                                    {% if domain.available %}
+                                        <small class="text-muted">{{ domain.price }}/year</small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mt-4">
+                        <label for="{{ form.custom_domain.id_for_label }}" class="form-label fw-semibold">
+                            Or enter your own domain idea:
+                        </label>
+                        {{ form.custom_domain }}
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-4">
+                        <a href="{% url 'accounts_public:signup_wizard' step=2 %}" class="btn btn-outline-secondary btn-lg flex-fill">
+                            <i class="bi bi-arrow-left me-2"></i>Back
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg flex-fill" id="continueBtn" disabled>
+                            Continue to Preview
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+                
+                <!-- Step 4: AI Preview -->
+                {% if current_step == 4 %}
+                <div class="mb-4">
+                    <div class="alert alert-info">
+                        <i class="bi bi-magic me-2"></i>
+                        <strong>AI Generated!</strong> We've created this preview based on your business information.
+                    </div>
+                </div>
+                
+                <!-- Website Preview -->
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <div class="d-flex align-items-center">
+                            <div class="browser-dots me-3">
+                                <span class="dot bg-danger"></span>
+                                <span class="dot bg-warning"></span>
+                                <span class="dot bg-success"></span>
+                            </div>
+                            <small class="text-muted">{{ wizard_data.selected_domain }}</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <!-- Website Preview Content -->
+                        <div class="website-preview">
+                            <div class="text-center py-5 bg-primary text-white rounded mb-4">
+                                <h1 class="display-4 fw-bold">{{ ai_preview.headline }}</h1>
+                                <p class="lead">{{ ai_preview.tagline }}</p>
+                                <button class="btn btn-light btn-lg">Get Started</button>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h3>About Us</h3>
+                                    <p>{{ ai_preview.about }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5>Our Services</h5>
+                                    <ul class="list-unstyled">
+                                        {% for service in ai_preview.services %}
+                                        <li class="mb-2">
+                                            <i class="bi bi-check-circle text-success me-2"></i>
+                                            {{ service }}
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <div class="form-check">
+                            {{ form.approve_content }}
+                            <label class="form-check-label fw-semibold" for="{{ form.approve_content.id_for_label }}">
+                                I approve this content and want to proceed with website creation
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <h6 class="fw-semibold mb-3">Choose Design Style:</h6>
+                    <div class="row mb-4">
+                        {% for choice in form.design_style %}
+                        <div class="col-md-6 mb-2">
+                            <div class="form-check">
+                                {{ choice.tag }}
+                                <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                    {{ choice.choice_label }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <h6 class="fw-semibold mb-3">Choose Color Scheme:</h6>
+                    <div class="row mb-4">
+                        {% for choice in form.color_scheme %}
+                        <div class="col-md-6 mb-2">
+                            <div class="form-check">
+                                {{ choice.tag }}
+                                <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                    {{ choice.choice_label }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="{{ form.additional_requests.id_for_label }}" class="form-label fw-semibold">
+                            Additional Requests <small class="text-muted">(Optional)</small>
+                        </label>
+                        {{ form.additional_requests }}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'accounts_public:signup_wizard' step=3 %}" class="btn btn-outline-secondary btn-lg flex-fill">
+                            <i class="bi bi-arrow-left me-2"></i>Back
+                        </a>
+                        <button type="submit" class="btn btn-success btn-lg flex-fill">
+                            <i class="bi bi-rocket-takeoff me-2"></i>
+                            Create My Website!
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.steps-indicator .step {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+
+.steps-indicator .step.active,
+.steps-indicator .step.completed {
+    opacity: 1;
+}
+
+.steps-indicator .step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+.steps-indicator .step.completed .step-icon {
+    background: rgba(40, 167, 69, 0.8);
+}
+
+.steps-indicator .step.active .step-icon {
+    background: rgba(255,255,255,0.3);
+}
+
+.domain-option {
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.domain-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.domain-option.selected {
+    border-color: #0d6efd !important;
+    background-color: #f8f9fa;
+}
+
+.browser-dots .dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 4px;
+}
+
+.website-preview {
+    font-size: 0.9rem;
+}
+</style>
+
+<script>
+function selectDomain(domain) {
+    // Remove selected class from all options
+    document.querySelectorAll('.domain-option').forEach(el => {
+        el.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked option
+    event.currentTarget.classList.add('selected');
+    
+    // Set hidden input value
+    document.querySelector('#id_selected_domain').value = domain;
+    
+    // Enable continue button
+    document.querySelector('#continueBtn').disabled = false;
+}
+
+// Enable continue button if custom domain is entered
+document.addEventListener('DOMContentLoaded', function() {
+    const customDomainInput = document.querySelector('#id_custom_domain');
+    if (customDomainInput) {
+        customDomainInput.addEventListener('input', function() {
+            if (this.value.trim()) {
+                document.querySelector('#id_selected_domain').value = this.value.trim();
+                document.querySelector('#continueBtn').disabled = false;
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
