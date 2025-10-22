@@ -8,8 +8,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from accounts.views import api_status
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/status/', api_status, name='api_status'),  # Direct API status endpoint
     path('api/v1/auth/', include('accounts.urls')),
     path('api/v1/tenants/', include('tenants.urls')),
     path('', include('accounts.public_urls')),  # Landing page, signup, login
