@@ -32,7 +32,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    # Our apps
     'accounts',
+    'websites',
+    'media_library',
+    'ai_tools',
 ]
 
 # Disable Redis cache temporarily
@@ -45,4 +49,4 @@ CACHES = {
 # Use simplified URLs for development
 ROOT_URLCONF = 'build_project.urls_dev'
 
-print("🔧 Using development settings with SQLite database")
+print("[DEV] Using development settings with SQLite database")

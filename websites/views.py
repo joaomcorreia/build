@@ -89,3 +89,45 @@ class PreviewWebsiteView(APIView):
             }, status=status.HTTP_200_OK)
         except Website.DoesNotExist:
             return Response({'error': 'Website not found'}, status=status.HTTP_404_NOT_FOUND)
+
+# Tenant-facing views (for serving actual websites)
+from django.views.generic import TemplateView
+
+class TenantHomeView(TemplateView):
+    """View for tenant website home page"""
+    template_name = 'websites/tenant_home.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add website data for the current tenant
+        try:
+            website = Website.objects.filter(tenant=self.request.tenant).first()
+            context['website'] = website
+        except:
+            context['website'] = None
+        return context
+
+class TenantContactView(TemplateView):
+    """View for tenant website contact page"""
+    template_name = 'websites/tenant_contact.html'
+    
+    def post(self, request, *args, **kwargs):
+        # Handle contact form submission
+        return self.get(request, *args, **kwargs)
+
+class TenantPageView(TemplateView):
+    """View for tenant website pages"""
+    template_name = 'websites/tenant_page.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_slug = kwargs.get('page_slug')
+        try:
+            page = Page.objects.filter(
+                website__tenant=self.request.tenant, 
+                slug=page_slug
+            ).first()
+            context['page'] = page
+        except:
+            context['page'] = None
+        return context

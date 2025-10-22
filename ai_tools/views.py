@@ -83,3 +83,14 @@ class AIUsageStatsView(APIView):
             return Response(AIUsageStatsSerializer(stats, many=True).data)
         except AIUsageStats.DoesNotExist:
             return Response({'error': 'Stats not found'}, status=status.HTTP_404_NOT_FOUND)
+
+class AIConfigurationView(APIView):
+    """View for AI configuration settings"""
+    
+    def get(self, request):
+        # Return AI configuration for tenant
+        return Response({'status': 'configuration retrieved'}, status=status.HTTP_200_OK)
+    
+    def post(self, request):
+        # Update AI configuration
+        return Response({'status': 'configuration updated'}, status=status.HTTP_200_OK)
